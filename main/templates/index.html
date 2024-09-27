@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+
+<body>
+    <h1>AI-Powered Calculator</h1>
+
+    <!-- Display the equation -->
+    <div>
+        <input type="text" id="equation_field" readonly>
+    </div>
+
+    <!-- Calculator buttons -->
+    <div id="calculator_buttons">
+        <button onclick="appendToEquation('1')">1</button>
+        <button onclick="appendToEquation('2')">2</button>
+        <button onclick="appendToEquation('3')">3</button>
+        <button onclick="appendToEquation('+')">+</button><br>
+        
+        <button onclick="appendToEquation('4')">4</button>
+        <button onclick="appendToEquation('5')">5</button>
+        <button onclick="appendToEquation('6')">6</button>
+        <button onclick="appendToEquation('-')">-</button><br>
+
+        <button onclick="appendToEquation('7')">7</button>
+        <button onclick="appendToEquation('8')">8</button>
+        <button onclick="appendToEquation('9')">9</button>
+        <button onclick="appendToEquation('*')">*</button><br>
+
+        <button onclick="appendToEquation('0')">0</button>
+        <button onclick="appendToEquation('.')">.</button>
+        <button onclick="appendToEquation('/')">/</button>
+        <button onclick="clearEquation()">C</button><br>
+
+        <button onclick="evaluateEquation()">=</button>
+    </div>
+
+    <!-- Display the result -->
+    <div id="result"></div>
+
+    <!-- Prompt for additional work -->
+    <div id="additional_work_prompt"></div>
+
+    <!-- JavaScript for functionality -->
+    <script>
+        // Function to append input to the equation field
+        function appendToEquation(value) {
+            document.getElementById('equation_field').value += value;
+        }
+
+        // Function to clear the equation field
+        function clearEquation() {
+            document.getElementById('equation_field').value = "";
+        }
+
+        // Function to send the equation to the server for evaluation
+        function evaluateEquation() {
+            const equation = document.getElementById('equation_field').value;
+
+            fetch('/evaluate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ equation: equation }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = 'Result: ' + data.result;
+                document.getElementById('additional_work_prompt').textContent = data.additional_work_prompt;
+            });
+        }
+    </script>
+</body>
+
+</html>
